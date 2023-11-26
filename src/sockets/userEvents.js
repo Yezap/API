@@ -32,12 +32,20 @@ function manageUserEvents(io, socket){
         console.log('Listing users...')
     })
 
-    // findUsersByName eventListener, it lists the users whose name first letters contains the searched characters and sends the result on a callback function
+    // listUsersByName eventListener, it lists the users whose name first letters contains the searched characters and sends the result on a callback function
     socket.on('list_users_by_name', async (searchedName, sendUsers) => {
         const users = await UserController.findUsersByName(searchedName)
 
         sendUsers(users)
         console.log(`Finding users by name [ ${searchedName} ]`)
+    })
+
+    // listUserByEmail eventListener, it returns the user whose email matches the search on a callback function
+    socket.on('list_user_by_email', async (email, sendUser) => {
+        const user = await UserController.findUserByEmail(email)
+
+        sendUser(user)
+        console.log(`Finding users by email [ ${email} ]`)
     })
 
     // updateUser eventListener, it updates a user and emits success and failure events

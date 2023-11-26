@@ -43,6 +43,7 @@ class MessageController {
     }
   }
 
+  // method that created a message at the MongoBD Message Collection
   static async sendMessage(text, sender, recipient) {
     try {
       const result = await message.create({
