@@ -2,6 +2,7 @@ import "dotenv/config"
 import { Server } from "socket.io"
 import HTTPserver from "./src/app.js"
 import { manageUserEvents } from "./src/sockets/userEvents.js"
+import { manageMessageEvents } from "./src/sockets/messageEvents.js"
 
 // the port is obtained from a Environmental Variable
 const PORT = process.env.PORT
@@ -24,6 +25,7 @@ io.on('connection', (socket) => {
     console.log(`A client has connected: [ ${socket.id} ]`)
 
     manageUserEvents(io, socket)
+    manageMessageEvents(io, socket)
 
     // disconnection eventListener
     socket.on('disconnect', (reason) => {

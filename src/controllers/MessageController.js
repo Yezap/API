@@ -5,7 +5,7 @@ import UserController from "./UserController.js"
 // created by Davi Piassi
 // last update: 2023, November, 26
 class MessageController {
-  
+
   static async listMessages(user1, user2) {
     try {
       const messages = await message.find({
@@ -45,7 +45,7 @@ class MessageController {
 
   static async sendMessage(text, sender, recipient) {
     try {
-      const result = await message.insertOne({
+      const result = await message.create({
         time: new Date().getTime(),
         text: text,
         sender: sender,
