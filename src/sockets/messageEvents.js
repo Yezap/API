@@ -20,6 +20,7 @@ function manageMessageEvents(io, socket){
         const messages = await MessageController.listMessages(user1, user2)
 
         returnMessages(messages)
+        console.log(`Someone joined a chat [ ${roomName} ]`)
     })
 
     socket.on('send_message', async (senderEmail, recipientEmail, text) => {

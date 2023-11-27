@@ -1,4 +1,6 @@
 import { user } from "../models/User.js"
+import "dotenv/config"
+import bcrypt from 'bcrypt'
 
 // this class is responible to manage the MongoDB User Collection data
 // created by Davi Piassi
@@ -19,10 +21,16 @@ class UserController {
   // method that receives user data and creates user document at MongoDB User Collection
   static async addUser(name, email, password, image) {
     try {
+
+      const saltRounds = parseInt(process.env.SALT_ROUNDS)
+
+      const salt = bcrypt.genSaltSync(saltRounds);
+      const hash = bcrypt.hashSync(password, salt);
+
       const result = await user.create({
         name: name,
         email: email,
-        password: password,
+        password: hash,
         image: image
       })
       return result
@@ -68,7 +76,6 @@ class UserController {
         {
           $set: {
             name: updatedUser.name,
-            password: updatedUser.password,
             image: updatedUser.image
           }
         }

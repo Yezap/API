@@ -1,5 +1,6 @@
 import UserController from '../controllers/UserController.js'
 import MessageController from '../controllers/MessageController.js'
+import bcrypt from 'bcrypt'
 
 // this function manages all the user socket events of the application
 function manageUserEvents(io, socket){
@@ -24,6 +25,27 @@ function manageUserEvents(io, socket){
         }
     })
 
+    socket.on('login', async ({email, password}) => {
+
+        const user = await UserController.findUserByEmail(email)
+
+        if (user) {
+            const passwordMatches = bcrypt.compareSync(password, user.password)
+
+            if (passwordMatches) {
+                socket.emit('auth_successfully', user)
+                console.log(`A user logged in succesfully [ ${user.email} ]`)
+            } else {
+                socket.emit('auth_failed', 'wrong password')
+                console.log(`Tried to log in with a wrong password [ ${email} ]`)
+            }
+        } else {
+            socket.emit('auth_failed', 'the user doesnt exist')
+            console.log(`Tried to log in with an inexistent user [ ${email} ]`)
+        }
+
+    })
+
     // listUsers eventListener, it lists all the app users and sends the result on a callback function
     socket.on('list_users', async (sendUsers) => {
         const users = await UserController.listUsers()
@@ -45,7 +67,7 @@ function manageUserEvents(io, socket){
         const user = await UserController.findUserByEmail(email)
 
         sendUser(user)
-        console.log(`Finding users by email [ ${email} ]`)
+        console.log(`Finding user by email [ ${email} ]`)
     })
 
     // updateUser eventListener, it updates a user and emits success and failure events
